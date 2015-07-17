@@ -2,6 +2,16 @@
 
 ######C# web crawler built for speed and flexibility.
 
+This is a mini project to familiarize myself with Web crawlers and Search engine functions.
+   The original repository is from  https://github.com/sjdirect/abot
+   This project aims to store web content in a database which allows optimize querying of content while remaining multithreaded capable, as the original repo stored Uris in memory.
+
+*Requires Manual setup of "csWebCrawler" Database on SQL_Server Express
+     This is a primitive testbench, will be integrated into Abot Webcrawler.cs->Crawlpage->ProcessPage
+     when time permits.
+
+<br /><br />
+<hr />
 Abot is an open source C# web crawler built for speed and flexibility. It takes care of the low level plumbing (multithreading, http requests, scheduling, link parsing, etc..). You just register for events to process the page data. You can also plugin your own implementations of core interfaces to take complete control over the crawl process. Abot targets .NET version 4.0. 
 
 *Please star this project!!*
