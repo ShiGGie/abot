@@ -5,6 +5,10 @@ using SqlTest_CSharp;
  * Seems like its best to keep functions here, and the caller of this class to be wrapped in its own
  *  using(connection) statement, then passing connection to this class. */
 
+// Recent change to database structure:
+    //Create a ContentTable which indexes each word found in an html page
+    // to an associated uri.
+    
 namespace SqlTest_CSharp
 {
     using System.Data;
@@ -43,6 +47,7 @@ namespace SqlTest_CSharp
 
         }
 
+        //Doesn't work
         private static Boolean tableExists()
         {
             Boolean exists;
@@ -100,13 +105,16 @@ namespace SqlTest_CSharp
         }
 
         //Return table of URIs
-        public static ArrayList findContentWithUri(Uri uri)
+        public static ArrayList getWordsFromUri(Uri uri)
         {
+            if (uri == null)
+                return null; 
+
             var list = new ArrayList();
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
-                SqlCommand query = new SqlCommand("SELECT * FROM c WHERE uri=@uri", conn);
+                SqlCommand query = new SqlCommand("SELECT words.word FROM words WHERE uri=@uri", conn);
                 query.Parameters.AddWithValue("@uri", uri.ToString());
                 try
                 {
@@ -118,9 +126,7 @@ namespace SqlTest_CSharp
                         {
                             while (reader.Read())
                             {
-                                string data1 = reader["uri"].ToString();
-                                string data2 = reader["content"].ToString();
-                                list.Add(data1);
+                                string data2 = reader["word"].ToString();
                                 list.Add(data2);
                             }
                         }
@@ -134,13 +140,17 @@ namespace SqlTest_CSharp
             return list;
         }
 
-        public static ArrayList getUriWithCriteria(String criteria)
+        //TODO: Accept variable amount of words, interesect results.
+        public static ArrayList getUriFromWords(String criteria)
         {
+            if (criteria == null || criteria == "")
+                return null;
+
             var list = new ArrayList();
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
-                SqlCommand query = new SqlCommand("SELECT * FROM c WHERE content=@text", conn);
+                SqlCommand query = new SqlCommand("SELECT words.uri FROM words WHERE word=@text", conn);
                 query.Parameters.AddWithValue("@text", criteria);
                 try
                 {
@@ -167,20 +177,23 @@ namespace SqlTest_CSharp
 
 
         //Add entry to database
-        public static Boolean addRecord(Uri uri, String content)
+        public static Boolean addRecord(String content, Uri uri)
         {
             Boolean ret = false;
+            if (content == null || content == "" || uri == null)
+                return true; //Assume sending nulls are a purposeful behavior
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
-                SqlCommand cmd = new SqlCommand("INSERT INTO c (varchar(256), text) VALUES (@0, @1)", conn);
-                cmd.Parameters.AddWithValue("@0", uri.ToString());
-                cmd.Parameters.AddWithValue("@1", content);
+                SqlCommand cmd = new SqlCommand("INSERT INTO words (word, uri) VALUES (@0, @1)", conn);
+                cmd.Parameters.AddWithValue("@0", content);
+                cmd.Parameters.AddWithValue("@1", uri.ToString());
 
                 try
                 {
                     conn.Open();
-                    Console.WriteLine("Inserted" + uri.ToString() + ". Total rows affected are " + cmd.ExecuteNonQuery());
+                    Console.WriteLine("Inserted record with uri: " + uri.ToString() + ". Total rows affected are " + cmd.ExecuteNonQuery());
                     ret = true;
                 }
                 catch (Exception ex)
@@ -193,19 +206,22 @@ namespace SqlTest_CSharp
         }
 
         //Drop entries in database
-        static Boolean dropRecordByUri(Uri uri)
+        public static Boolean dropRecordByUri(Uri uri)
         {
             Boolean ret = false;
+            if (uri == null)
+                return true; //Assume sending nulls are a purposeful behavior
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
-                SqlCommand cmd = new SqlCommand("DELETE FROM c WHERE uri=@0", conn);
+                SqlCommand cmd = new SqlCommand("DELETE FROM words WHERE uri=@0", conn);
                 cmd.Parameters.AddWithValue("@0", uri.ToString());
 
                 try
                 {
                     conn.Open();
-                    Console.WriteLine("Deleted" + uri.ToString() + ". Total rows affected are " + cmd.ExecuteNonQuery());
+                    Console.WriteLine("Deleted records with uri: " + uri.ToString() + ". Total rows affected are " + cmd.ExecuteNonQuery());
                     ret = true;
                 }
                 catch (Exception ex)

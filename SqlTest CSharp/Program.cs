@@ -27,15 +27,58 @@ namespace SqlTest_CSharp
             //TODO: Unit tests
             Console.WriteLine("Setting up table..");
             Mss.setupDatabase();
-            Console.WriteLine("Press enter to proceed to the next test. (1)");
-            Console.ReadLine();
-            Mss.findContentWithUri(new Uri("https://github.com"));
-            
-            //TODO: Regex search through content
-            //Console.WriteLine("Press enter to proceed to the next test. (2)");
-            //Console.ReadLine();
-            //Mss.getUriWithCriteria("github");
 
+            Console.WriteLine("Press enter to proceed to the next test. (1) addRecord");
+            Console.ReadLine();
+            String a = "HtmlContent.getText something something github ";
+            String[] result = a.Split((char[])null, StringSplitOptions.RemoveEmptyEntries); //split by whitespace, slightly optimized
+            foreach (String entry in result)
+            {
+                Mss.addRecord(entry, new Uri("https://github.com"));
+            }
+            String b = "HtmlContent.getText something something git";
+            result = b.Split((char[])null, StringSplitOptions.RemoveEmptyEntries); 
+            foreach (String entry in result)
+            {
+                Mss.addRecord(entry, new Uri("https://github.com"));
+            }
+
+            //getWordsFromUri
+            Console.WriteLine("Press enter to proceed to the next test. (2) getWordsFromUri");
+            Console.ReadLine();
+            Console.WriteLine("Print list");
+            var list = Mss.getWordsFromUri(new Uri("https://github.com"));
+            foreach (var i in list)
+            {
+                Console.WriteLine(i);
+            }
+
+            //getUriFromWords
+            Console.WriteLine("Press enter to proceed to the next test. (3) getUriFromWords");
+            Console.ReadLine();
+            list = Mss.getUriFromWords("git");
+            Console.WriteLine("Print list");
+            foreach (var i in list)
+            {
+                Console.WriteLine(i);
+            }
+            list = Mss.getUriFromWords("something");
+            Console.WriteLine("Print list");
+            foreach (var i in list)
+            {
+                Console.WriteLine(i);
+            }
+
+            //dropRecordByUri
+            Console.WriteLine("Press enter to proceed to the next test. (4) dropRecordByUri");
+            Console.ReadLine();
+            Mss.dropRecordByUri(new Uri("https://github.com"));
+            Console.WriteLine("Print list");
+            list = Mss.getWordsFromUri(new Uri("https://github.com"));
+            foreach (var i in list)
+            {
+                Console.WriteLine(i);
+            }
 
             Console.WriteLine("End of program");
             Console.ReadLine();

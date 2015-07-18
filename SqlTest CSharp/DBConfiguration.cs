@@ -12,8 +12,8 @@ namespace SqlTest_CSharp
         public DBConfiguration()
         {
             DBName = "csWebCrawler";
-            ContentTable = "c";
-            ContentTableSchema = "id Integer IDENTITY(1,1) PRIMARY KEY, uri VARCHAR(255), content TEXT";
+            ContentTable = "words";
+            ContentTableSchema = "id Integer IDENTITY(1,1) PRIMARY KEY, word VARCHAR(255), uri VARCHAR(255), "; // TODO: urls have been known to exceed 1000 with generated urls.
             //Leave this blank for windows auth
             Username = "";
             Password = "";
