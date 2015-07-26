@@ -118,6 +118,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlTest CSharp\SqlServer.csproj">
+      <Project>{0cdfefc4-d83a-4a6d-a0ed-7dd8b4846db6}</Project>
+      <Name>SqlServer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

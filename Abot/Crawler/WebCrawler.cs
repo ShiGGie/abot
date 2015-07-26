@@ -12,6 +12,9 @@ using Abot.Util;
 using AutoMapper;
 using log4net;
 using Timer = System.Timers.Timer;
+using SqlTest_CSharp;
+using System.Text.RegularExpressions;
+
 
 namespace Abot.Crawler
 {
@@ -185,6 +188,7 @@ namespace Abot.Crawler
             IHyperLinkParser hyperLinkParser,
             IMemoryManager memoryManager)
         {
+            Mss.setupDatabase();
             _crawlContext = new CrawlContext();
             _crawlContext.CrawlConfiguration = crawlConfiguration ?? GetCrawlConfigurationFromConfigFile();
             CrawlBag = _crawlContext.CrawlBag;
@@ -680,7 +684,10 @@ namespace Abot.Crawler
 
                 bool shouldCrawlPageLinks = ShouldCrawlPageLinks(crawledPage);
                 if (shouldCrawlPageLinks || _crawlContext.CrawlConfiguration.IsForcedLinkParsingEnabled)
+                {
                     ParsePageLinks(crawledPage);
+                    AddContentToDB(crawledPage);
+                }
 
                 ThrowIfCancellationRequested();
 
@@ -711,6 +718,22 @@ namespace Abot.Crawler
 
                 _crawlContext.IsCrawlHardStopRequested = true;
             }
+        }
+
+        protected virtual void AddContentToDB(CrawledPage crawledPage)
+        {
+            //TODO: If I ever make a search engine, change databaseformat to
+            // increment a counter for each word's appearance
+
+            String pattern = @"<[^>]*>";
+            Regex rgx = new Regex(pattern);
+            String textOnlyContent = rgx.Replace(crawledPage.Content.Text, " ");
+            String[] result = textOnlyContent.Split((char[])null, StringSplitOptions.RemoveEmptyEntries); //split by whitespace, slightly optimized
+            foreach (String entry in result)
+            {
+                Mss.addRecord(entry, new Uri(crawledPage.Uri.Scheme+"://"+crawledPage.Uri.Host));
+            }
+
         }
 
         protected virtual void ProcessRedirect(CrawledPage crawledPage)

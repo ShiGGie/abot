@@ -39,7 +39,7 @@ namespace Abot.Util
         protected int _numberOfRunningThreads = 0;
         protected ManualResetEvent _resetEvent = new ManualResetEvent(true);
         protected Object _locker = new Object();
-        protected bool _isDisplosed = false;
+        protected bool _isDisposed = false;
 
         public ThreadManager(int maxThreads)
         {
@@ -69,13 +69,13 @@ namespace Abot.Util
             if (_abortAllCalled)
                 throw new InvalidOperationException("Cannot call DoWork() after AbortAll() or Dispose() have been called.");
 
-            if (!_isDisplosed && MaxThreads > 1)
+            if (!_isDisposed && MaxThreads > 1)
             {
                 _resetEvent.WaitOne();
                 lock (_locker)
                 {
                     _numberOfRunningThreads++;
-                    if (!_isDisplosed && _numberOfRunningThreads >= MaxThreads)
+                    if (!_isDisposed && _numberOfRunningThreads >= MaxThreads)
                         _resetEvent.Reset();
 
                     _logger.DebugFormat("Starting another thread, increasing running threads to [{0}].", _numberOfRunningThreads);
@@ -98,7 +98,7 @@ namespace Abot.Util
         {
             AbortAll();
             _resetEvent.Dispose();
-            _isDisplosed = true;
+            _isDisposed = true;
         }
 
         public virtual bool HasRunningThreads()
@@ -131,7 +131,7 @@ namespace Abot.Util
                     {
                         _numberOfRunningThreads--;
                         _logger.DebugFormat("[{0}] threads are running.", _numberOfRunningThreads);
-                        if (!_isDisplosed && _numberOfRunningThreads < MaxThreads)
+                        if (!_isDisposed && _numberOfRunningThreads < MaxThreads)
                             _resetEvent.Set();
                     }
                 }

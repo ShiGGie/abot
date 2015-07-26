@@ -42,7 +42,7 @@ namespace Abot.Core
                 pageContent.Charset = charset;
                 pageContent.Encoding = e;
                 pageContent.Text = content;
-
+              
                 return pageContent;
             }
         }

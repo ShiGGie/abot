@@ -25,9 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TestResponses.saz = TestResponses.saz
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest CSharp", "SqlTest CSharp\SqlTest CSharp.csproj", "{0CDFEFC4-D83A-4A6D-A0ED-7DD8B4846DB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServer", "SqlTest CSharp\SqlServer.csproj", "{0CDFEFC4-D83A-4A6D-A0ED-7DD8B4846DB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest CSharpTests", "SqlTest CSharpTests\SqlTest CSharpTests.csproj", "{0EA8ECB4-7E9B-461E-9690-0FC10151CEBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServer.Tests.Unit", "SqlTest CSharpTests\SqlServer.Tests.Unit.csproj", "{0EA8ECB4-7E9B-461E-9690-0FC10151CEBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
